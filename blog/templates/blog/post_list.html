@@ -7,18 +7,15 @@
 		<h1><a href="/">My Blog</a></h1>
 	</div>
 	
-	<div>
-		<p>published: 23.06.2020, 12:24</p>
-		<h2><a href="">My First Post</a></h2>
-		<p>This is a simple paragraph explaining the above link. At the moment the above link doesn't actually do anything.</p>
-		
-	</div>
 	
-	<div>
-		<p>published: 23.06.2020, 12:26</p>
-		<h2><a href="">My Second Post</a></h2>
-		<p>This is the second post. The link is not live at the moment.</p>
-	</div>
+	{% for post in posts %}
+		<div>
+			<p>published: {{ post.published_date }}</p>
+			<h2><a href="">{{ post.title }}</a></h2>
+			<p>{{ post.text|linebreaksbr }}</p>
+		</div>
+	{% endfor %}
+	
 	
 </body>
 </html>
