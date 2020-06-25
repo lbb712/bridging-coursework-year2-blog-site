@@ -13,9 +13,22 @@
 	margin-left: 40px;
 }
 
-h1, h2, h3, h4 {
+h1{
 	font-family: 'Lobster', cursive;
 }
+
+ h2, h3, h4{
+	 font-family: "Roboto", sans-serif;
+	 font-size:20pt;
+	 font-weight: bold;
+	 text-decoration: underline;
+ }
+
+p{
+	font-family: "Roboto", sans-serif;
+	font-size: 16pt;
+}
+	
 .date{
 	color: #828282;
 }
