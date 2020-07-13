@@ -1,3 +1,6 @@
+body{
+	display: inline-block;
+}
 .page-header{
 	background-color: hsl(180deg, 100%, 15.5%);
 	margin-top: 0px;
@@ -42,6 +45,8 @@ p{
 	font-family: "Roboto", sans-serif;
 	font-size: 16pt;
 	color: #550f21;
+	--lne-height: 2.4rem;
+	line-height: var(--lne-height);
 }
 	
 .date{
@@ -88,5 +93,28 @@ p{
 #comment{
 	color: #993a4d;
 	font-style: underline;
+}
+
+.line-clamp-overflow{
+	--max-lines: 3;
+	position: relative;
+	max-height: calc(var(--lne-height)*var(--max-lines));
+	overflow: hidden;
+	padding-right: 1.5rem;
+}
+
+.line-clamp-overflow::before{
+	position: absolute;
+	content: "...";
+	bottom: 0;
+	right: 0;
+}
+
+.line-clamp-overflow::after{
+	content: "";
+	position: absolute;
+	right: 0;
+	width: 1rem;
+	height: 1rem;
 }
 
