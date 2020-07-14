@@ -1,6 +1,52 @@
 from selenium import webdriver
+import unittest
 
-browser = webdriver.Firefox()
-browser.get('http://localhost:8000')
+class NewVisitorTest(unittest.TestCase):
+    
+    def setUp(self):
+        self.browser = webdriver.Firefox()
+        
+    def tearDown(self):
+        self.browser.quit()
+        
+    def test_can_view_blog_posts_and_make_comments(self):
+        #Bob has heard about a new blogging website. He goes to check out its homepage
+        self.browser.get('http://localhost:8000')
 
-assert 'Django' in browser.title
+        #He notices the page title and header mention blogs.
+        self.assertIn('blog', self.browser.title)
+        self.fail('Finish the test!')
+        
+        #He is able to see the list of blog posts.
+        
+        #He can still see the blog posts and all approved comments. Bob then tries to comment on this post which works, but he can't see his comment as it needs to be approved by an aithorised user.
+
+
+if __name__ == '__main__':
+    unittest.main(warnings='ignore')
+
+
+#He is invited to sign in to the website.
+
+#He is invited to create a new blog post.
+
+#Bob wants to edit an existing blog post. He does this by clicking on the post in question and then clicking the edit tool.
+
+#Bob edits the blog post accordingly, when he is done, he clicks "submit".
+
+#He will now see the updated blog post.
+
+#Bob wonders whether the changes he has made will be saved. He then sees that each blog post is entered as a form and stored on the model database.
+
+#Bob wants to delete a blog post. He does this by viewing the blog post in more detail and clicking on the remove icon.
+
+#Bob is redirected to the list of blog posts and sees that the blog is no longer present.
+
+#Bob wishes to leave a comment on one of the blog posts. He does this by viewing the blog post in more detail, then scrolling to the bottom and clicking add new comment. He then approves his comment and sees it added to the blog post.
+
+#Bob wishes to see what he can do as a un-authorised user so he logs out
+
+#Bob wishes to approve any not yet approved comments. He visits every post and approves any comment that needs to be.
+
+#Bob also views the drafted blog posts that are yet to be published by clicking on the drafts icon.
+
