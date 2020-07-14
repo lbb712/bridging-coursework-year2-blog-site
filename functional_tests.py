@@ -1,4 +1,6 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
 import unittest
 
 class NewVisitorTest(unittest.TestCase):
@@ -15,12 +17,16 @@ class NewVisitorTest(unittest.TestCase):
 
         #He notices the page title and header mention blogs.
         self.assertIn('blog', self.browser.title)
-        self.fail('Finish the test!')
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Blog', header_text)
+       
         
         #He is able to see the list of blog posts.
+        post = self.browser.find_element_by_css_selector('div.post')
+        self.assertEqual(post.get_attribute('title'),'')
         
-        #He can still see the blog posts and all approved comments. Bob then tries to comment on this post which works, but he can't see his comment as it needs to be approved by an aithorised user.
-
+        #Bob tries to comment on a post, via the post_detail view.
+        self.fail('Finish the test.')
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')
