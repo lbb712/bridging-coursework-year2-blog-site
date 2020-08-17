@@ -13,7 +13,7 @@ class PostListTest(TestCase):
         self.assertTemplateUsed(response, 'blog/base.html')
         
 class ItemModelTest(TestCase):
-    
+  
     def test_saving_and_retrieving_items(self):
         user = User(username='username')
         user.save()
@@ -37,3 +37,5 @@ class ItemModelTest(TestCase):
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'The first blog item')
         self.assertEqual(second_saved_item.text, 'Blog item the second')
+        
+   
