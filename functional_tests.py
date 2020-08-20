@@ -41,7 +41,7 @@ class NewVisitorTest(unittest.TestCase):
         #When she presses enter, the page updates and she sees her name in the form.
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1) 
-        self.check_for_row_in_list_table('Name: Alice')
+        self.check_for_row_in_list_table('1: Alice')
         
         #There is another text box inviting her to input her surname. She inputs Smith
         inputbox = self.browser.find_element_by_id('id_new_item')
@@ -50,8 +50,8 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1)
         
         #The page updates again showing both items.
-        self.check_for_row_in_list_table('Name: Alice')
-        self.check_for_row_in_list_table('Surname: Smith')
+        self.check_for_row_in_list_table('1: Alice')
+        self.check_for_row_in_list_table('2: Smith')
    
         #Alice wonders whether the site will remember her details. Then she sees that the site has generated a uniques URL for her -- there is some explanatory text to that effect.
         self.fail('Finish the test!')
