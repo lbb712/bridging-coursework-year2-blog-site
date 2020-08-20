@@ -13,20 +13,20 @@ class NewVisitorTest(unittest.TestCase):
     def test_can_start_a_CV_and_retrieve_it_later(self):
         #Alice has heard about a new online CV app. She goes to check out its home page.
         self.browser.get('http://localhost:8000')
+        
+        #She follows the CV link in the top menu header
+        self.browser.get('http://localhost:8000/cvedit')
 
         #She notices the page title and a URL mention CV editor
         self.assertIn('CV', self.browser.title)
-        #link_text = self.browser.find_element_by_tag_name('li').text
-        #self.assertIn('CV', link_text)
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('CV', header_text)
         
-
-        #She follows the CV link in the top menu header
-        self.browser.get('http://localhost:8000/cvedit')
         
         #She is invited to enter her name straight away
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEqual(
-            imputbox.get_attribute('placeholder'),
+            inputbox.get_attribute('placeholder'),
             'Enter your name'
         )
         
@@ -40,7 +40,8 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')  
         self.assertTrue(
-            any(row.text == 'Name: Alice' for row in rows)
+            any(row.text == 'Name: Alice' for row in rows),
+            "New text item didn't appear in table."
         )
         
         #There is another text box inviting her to input her date of birth. She inputs "19/11/1995"
