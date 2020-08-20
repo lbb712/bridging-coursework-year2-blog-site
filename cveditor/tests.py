@@ -3,6 +3,7 @@ from django.urls import resolve
 from blog.views import home
 from cveditor.views import cv_edit
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 
 class HomePageTest(TestCase):
 
@@ -29,6 +30,5 @@ class CVPageTest(TestCase):
         request = HttpRequest()
         response = cv_edit(request)
         html = response.content.decode('utf8')
-        self.assertTrue(html.startswith('<html>'))
-        self.assertIn('<title>CV Editor</title>', html)
-        self.assertTrue(html.endswith('</html>'))
+        expected_html = render_to_string('cveditor/cv_edit.html')
+        self.assertEqual(html, expected_html)
