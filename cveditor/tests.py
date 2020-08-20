@@ -27,8 +27,10 @@ class CVPageTest(TestCase):
         self.assertEqual(found.func, cv_edit)
         
     def test_cv_edit_page_returns_correct_html(self):
-        request = HttpRequest()
-        response = cv_edit(request)
-        html = response.content.decode('utf8')
-        expected_html = render_to_string('cveditor/cv_edit.html')
-        self.assertEqual(html, expected_html)
+        response = self.client.get('/cvedit')
+        self.assertTemplateUsed(response, 'cveditor/cv_edit.html')
+        
+    def test_can_save_a_POST_request(self):
+        response = self.client.post('/cvedit', data={'item_text': 'A new text item'})
+        self.assertIn('A new text item', response.content.decode())
+        self.assertTemplateUsed(response, 'cveditor/cv_edit.html')

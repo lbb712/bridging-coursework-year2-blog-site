@@ -39,10 +39,7 @@ class NewVisitorTest(unittest.TestCase):
         
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')  
-        self.assertTrue(
-            any(row.text == 'Name: Alice' for row in rows),
-            "New text item didn't appear in table."
-        )
+        self.assertIn('Name: Alice', [row.text for row in rows])
         
         #There is another text box inviting her to input her date of birth. She inputs "19/11/1995"
         self.fail('Finish the test!')
