@@ -1,9 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
-import unittest
+from django.test import LiveServerTestCase
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
         
@@ -17,7 +17,7 @@ class NewVisitorTest(unittest.TestCase):
         
     def test_can_start_a_CV_and_retrieve_it_later(self):
         #Alice has heard about a new online CV app. She goes to check out its home page.
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
         
         #She follows the CV link in the top menu header
         self.browser.get('http://localhost:8000/cvedit')
@@ -59,7 +59,6 @@ class NewVisitorTest(unittest.TestCase):
 
         #Satisfied, she leaves the site to return at a later date.
 
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
+
 
 
