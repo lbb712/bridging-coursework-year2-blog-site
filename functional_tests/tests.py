@@ -26,7 +26,7 @@ class NewVisitorTest(LiveServerTestCase):
                     raise e
                 time.sleep(0.5)
         
-    def test_can_start_a_CV_and_retrieve_it_later(self):
+    def test_can_start_a_CV_for_one_user(self):
         #Alice has heard about a new online CV app. She goes to check out its home page.
         self.browser.get(self.live_server_url)
         
@@ -61,12 +61,50 @@ class NewVisitorTest(LiveServerTestCase):
         #The page updates again showing both items.
         self.wait_for_row_in_list_table('1: Alice')
         self.wait_for_row_in_list_table('2: Smith')
-   
-        #Alice wonders whether the site will remember her details. Then she sees that the site has generated a uniques URL for her -- there is some explanatory text to that effect.
-        self.fail('Finish the test!')
-        #She visits that URL -her details are still there.
 
         #Satisfied, she leaves the site to return at a later date.
+        
+    def test_multiple_users_can_start_CVs_at_different_URLs(self):
+        # Alice starts a new to-do list
+        self.browser.get('http://localhost:8000/cvedit')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Alice')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Alice')
+
+        # She notices that her list has a unique URL
+        alice_cv_url = self.browser.current_url
+        self.assertRegex(alice_cv_url, '/cvedit/.+')
+        ## We use a new browser session to make sure that no information
+        ## of Alice's is coming through from cookies etc
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+        
+        #Francis visits the home page.  There is no sign of Alice's
+        # list
+        self.browser.get('http://localhost:8000/cvedit')
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Alice', page_text)
+        self.assertNotIn('Smith', page_text)
+        
+        # Francis starts a new list by entering a new item. He
+        # is less interesting than Alice...
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Francis')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Francis')
+        
+        # Francis gets his own unique URL
+        francis_cv_url = self.browser.current_url
+        self.assertRegex(francis_cv_url, '/cvedit/.+')
+        self.assertNotEqual(francis_cv_url, alice_cv_url)
+        # Again, there is no trace of Alice's list
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Alice', page_text)
+        self.assertIn('Francis', page_text)
+
+        #Finish the test.
+        self.fail('Finish the test!')
 
 
 
