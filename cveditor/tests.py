@@ -4,7 +4,7 @@ from blog.views import home
 from cveditor.views import cv_edit
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from cveditor.models import Item
+from cveditor.models import Item, CV
 
 class HomePageTest(TestCase):
 
@@ -32,15 +32,23 @@ class CVPageTest(TestCase):
         self.assertTemplateUsed(response, 'cveditor/cv_edit.html')
 
         
-class ItemModelTest(TestCase):
+class CVAndItemModelTest(TestCase):
     def test_saving_and_retrieving_items(self):
+        cv_ = CV()
+        cv_.save()
+        
         first_item = Item()
         first_item.text = 'The first (ever) list item'
+        first_item.cv = cv_
         first_item.save()
         
         second_item = Item()
         second_item.text = 'Item the second'
+        second_item.cv = cv_
         second_item.save()
+        
+        saved_cv = CV.objects.first()
+        self.assertEqual(saved_cv, cv_)
         
         saved_items = Item.objects.all()
         self.assertEqual(saved_items.count(), 2)
@@ -48,13 +56,16 @@ class ItemModelTest(TestCase):
         first_saved_item = saved_items[0]
         second_saved_item = saved_items[1]
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
+        self.assertEqual(first_saved_item.cv, cv_)
         self.assertEqual(second_saved_item.text, 'Item the second')
+        self.assertEqual(second_saved_item.cv, cv_)
     
 class CVViewTest(TestCase):
 
     def test_displays_all_list_items(self):
-        Item.objects.create(text='itemey 1')
-        Item.objects.create(text ='itemey 2')
+        cv_ = CV.objects.create()
+        Item.objects.create(text='itemey 1', cv=cv_)
+        Item.objects.create(text ='itemey 2', cv=cv_)
         
         response = self.client.get('/cvedit/the_only_CV_in_the_world/')
         
