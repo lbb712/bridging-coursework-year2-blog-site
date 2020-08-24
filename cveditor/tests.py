@@ -30,22 +30,6 @@ class CVPageTest(TestCase):
     def test_cv_edit_page_returns_correct_html(self):
         response = self.client.get('/cvedit')
         self.assertTemplateUsed(response, 'cveditor/cv_edit.html')
-        
-    def test_can_save_a_POST_request(self):
-        self.client.post('/cvedit', data={'item_text': 'A new text item'})
-        
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new text item')
-        
-    def test_redirects_after_POST(self):
-        response = self.client.post('/cvedit', data={'item_text': 'A new text item'})
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/cvedit/the_only_CV_in_the_world/')
-        
-    def test_only_saves_items_when_necessary(self):
-        self.client.get('/cvedit')
-        self.assertEqual(Item.objects.count(), 0)
 
         
 class ItemModelTest(TestCase):
@@ -80,3 +64,17 @@ class CVViewTest(TestCase):
     def test_uses_list_template(self):
         response = self.client.get('/cvedit/the_only_CV_in_the_world/')
         self.assertTemplateUsed(response, 'cveditor/cv_view.html')
+        
+class NewListTest(TestCase):
+
+    def test_can_save_a_POST_request(self):
+        self.client.post('/cvedit/new', data={'item_text': 'A new text item'})
+        
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new text item')
+    
+    def test_redirects_after_POST(self):
+        response = self.client.post('/cvedit/new', data={'item_text': 'A new text item'})
+        self.assertRedirects(response, '/cvedit/the_only_CV_in_the_world/')
+    
