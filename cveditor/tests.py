@@ -61,22 +61,28 @@ class CVAndItemModelTest(TestCase):
         self.assertEqual(second_saved_item.cv, cv_)
     
 class CVViewTest(TestCase):
-
-    def test_displays_all_list_items(self):
+    def test_uses_cv_template(self):
         cv_ = CV.objects.create()
-        Item.objects.create(text='itemey 1', cv=cv_)
-        Item.objects.create(text ='itemey 2', cv=cv_)
+        response = self.client.get('/cvedit/{cv_.id}/')
+        self.assertTemplateUsed(response, 'cveditor/cv_view.html')
+
+    def test_displays_only_items_for_that_cv(self):
+        correct_cv = CV.objects.create()
+        Item.objects.create(text='itemey 1', cv=correct_cv)
+        Item.objects.create(text ='itemey 2', cv=correct_cv)
+        other_cv = CV.objects.create()
+        Item.objects.create(text='other cv item 1', cv=other_cv)
+        Item.objects.create(text='other cv item 2', cv=other_cv)
         
-        response = self.client.get('/cvedit/the_only_CV_in_the_world/')
+        response = self.client.get('/cvedit/{correct_cv.id}/')
         
         self.assertContains(response, 'itemey 1')
         self.assertContains(response, 'itemey 2')
+        self.assertNotContains(response, 'other list item 1')
+        self.assertNotContains(response, 'other list item 2')
         
-    def test_uses_list_template(self):
-        response = self.client.get('/cvedit/the_only_CV_in_the_world/')
-        self.assertTemplateUsed(response, 'cveditor/cv_view.html')
-        
-class NewListTest(TestCase):
+
+class NewCVTest(TestCase):
 
     def test_can_save_a_POST_request(self):
         self.client.post('/cvedit/new', data={'item_text': 'A new text item'})
@@ -87,5 +93,6 @@ class NewListTest(TestCase):
     
     def test_redirects_after_POST(self):
         response = self.client.post('/cvedit/new', data={'item_text': 'A new text item'})
-        self.assertRedirects(response, '/cvedit/the_only_CV_in_the_world/')
+        new_cv = CV.objects.first()
+        self.assertRedirects(response, '/cvedit/{new_cv.id}/')
     

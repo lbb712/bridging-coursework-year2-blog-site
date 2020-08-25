@@ -3,7 +3,8 @@ from . import views
 
 
 urlpatterns = [
-    path('cvedit', views.cv_edit, name= 'cv_edit'),
-    path('cvedit/the_only_CV_in_the_world/', views.view_cv, name='view_cv'),
-    path('cvedit/new', views.new_cv, name='new_cv'),
+    path('cvedit/<int:pk>/edit/', views.cv_edit, name= 'cv_edit'),
+    path('cvedit/<int:pk>/', views.view_cv, name='view_cv'),
+    path('cvedit/new/', views.new_cv, name='new_cv'),
+    path('cvedit/list', views.cv_list, name='cv_list'),
 ]

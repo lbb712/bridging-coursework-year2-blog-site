@@ -1,8 +1,7 @@
 from django.db import models
+from django.utils import timezone 
     
 class CV(models.Model):
-    pass
-    
-class Item(models.Model):
-    text = models.TextField(default='')
-    cv =  models.ForeignKey(CV, default=None, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200, default='')
+    created_date = models.DateTimeField(default= timezone.now)
+    name = models.CharField(max_length=200, default='')

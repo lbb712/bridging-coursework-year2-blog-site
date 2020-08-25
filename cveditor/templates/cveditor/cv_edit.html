@@ -2,11 +2,13 @@
 	<head>
 		<title>CV Editor</title>
 	</head>
+	
 	<body>
-		<h1>Start a new CV</h1>
-		<form method="POST" action="/cvedit/new">
-			<input name="item_text" id="id_new_item" placeholder="Enter your name"></input>
-			{% csrf_token %}
+		<h1>Edit Your CV</h1>
+		<form method="POST" >{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit" class="save btn btn default">Save</button>
+			<button type="reset" class="reset btn btn default">Reset</button>
 		</form>
 	</body>
 </html>

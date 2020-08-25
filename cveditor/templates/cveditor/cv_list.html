@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>CV Editor</title>
+	</head>
+	
+	<body>
+		<h1>Your CV's</h1>
+		{% for cv in cvs %}
+			<div>
+				<h2><a href="{% url 'view_cv' pk=cv.pk %}">{{ cv.title }}</a></h2>
+				<div>
+					<p><small>Created: {{ cv.created_date }}</small></p>
+				</div>
+			</div>
+		{% endfor %}
+	</body>
+</html>
