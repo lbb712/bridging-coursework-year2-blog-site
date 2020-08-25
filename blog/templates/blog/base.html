@@ -16,8 +16,10 @@
 		{% if user.is_authenticated %}
 			<li><a href="{% url 'post_new' %}"><span class="glyphicon glyphicon-plus"></span></a></li>
 			<li><a href="{% url 'post_draft_list' %}"><span class="glyphicon glyphicon-edit"></span></a></li>
+			<li><a href="{% url 'cv_list' %}">CV</a></li>
 			<li>Hello {{ user.username }} <small>{<a href="{% url 'logout' %}" >Log out</a>}</small></li>
 		{% else %}
+			<li><a href="{% url 'cv_list' %}">CV</a></li>
 			<li><a href="{% url 'login' %}"><span class="glyphicon glyphicon-lock"></span></a></li>
 		{% endif %}
 		</ul>

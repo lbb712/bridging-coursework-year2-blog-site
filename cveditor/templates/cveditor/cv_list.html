@@ -1,17 +1,16 @@
-<html>
-	<head>
-		<title>CV Editor</title>
-	</head>
-	
-	<body>
-		<h1>Your CV's</h1>
-		{% for cv in cvs %}
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+	<h1>Your CV's</h1>
+	{% for cv in cvs %}
+		<div>
+			<h2><a href="{% url 'view_cv' pk=cv.pk %}">{{ cv.title }}</a></h2>
 			<div>
-				<h2><a href="{% url 'view_cv' pk=cv.pk %}">{{ cv.title }}</a></h2>
-				<div>
-					<p><small>Created: {{ cv.created_date }}</small></p>
-				</div>
+				<p><small>Created: {{ cv.created_date }}</small></p>
 			</div>
-		{% endfor %}
-	</body>
-</html>
+		</div>
+	{% endfor %}
+	<a href="{% url 'new_cv' %}">New CV<a>
+	
+{% endblock %}
