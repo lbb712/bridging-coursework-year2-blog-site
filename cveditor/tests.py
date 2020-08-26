@@ -1,10 +1,12 @@
 from django.test import TestCase
 from django.urls import resolve
 from blog.views import home
-from cveditor.views import cv_edit
+from cveditor.views import cv_list
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from cveditor.models import Item, CV
+from cveditor.models import CV
+from cveditor.forms import CVForm, EMPTY_FIELD_ERROR
+
 
 class HomePageTest(TestCase):
 
@@ -16,7 +18,6 @@ class HomePageTest(TestCase):
         request = HttpRequest()
         response = home(request)
         html = response.content.decode('utf8')
-        #self.assertTrue(html.startswith('<html>'))
         self.assertIn('<h1 class="center">Hi!</h1>', html)
         self.assertTrue(html.endswith('</html>'))
         
@@ -24,75 +25,48 @@ class HomePageTest(TestCase):
 class CVPageTest(TestCase):
     
     def test_cv_url_resolves_to_cv_editor_page(self):
-        found = resolve('/cvedit')
-        self.assertEqual(found.func, cv_edit)
+        found = resolve('/cvedit/list')
+        self.assertEqual(found.func, cv_list)
         
     def test_cv_edit_page_returns_correct_html(self):
-        response = self.client.get('/cvedit')
-        self.assertTemplateUsed(response, 'cveditor/cv_edit.html')
+        response = self.client.get('/cvedit/list')
+        self.assertTemplateUsed(response, 'cveditor/cv_list.html')
 
         
 class CVAndItemModelTest(TestCase):
     def test_saving_and_retrieving_items(self):
-        cv_ = CV()
-        cv_.save()
+        first_cv = CV()
+        first_cv.title = 'The first cv title'
+        first_cv.name='Jane'
+        first_cv.save()
         
-        first_item = Item()
-        first_item.text = 'The first (ever) list item'
-        first_item.cv = cv_
-        first_item.save()
-        
-        second_item = Item()
-        second_item.text = 'Item the second'
-        second_item.cv = cv_
-        second_item.save()
+        second_cv = CV()
+        second_cv.title = 'The second cv title'
+        second_cv.name = 'John'
+        second_cv.save()
         
         saved_cv = CV.objects.first()
-        self.assertEqual(saved_cv, cv_)
-        
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-        
-        first_saved_item = saved_items[0]
-        second_saved_item = saved_items[1]
-        self.assertEqual(first_saved_item.text, 'The first (ever) list item')
-        self.assertEqual(first_saved_item.cv, cv_)
-        self.assertEqual(second_saved_item.text, 'Item the second')
-        self.assertEqual(second_saved_item.cv, cv_)
-    
-class CVViewTest(TestCase):
-    def test_uses_cv_template(self):
-        cv_ = CV.objects.create()
-        response = self.client.get('/cvedit/{cv_.id}/')
-        self.assertTemplateUsed(response, 'cveditor/cv_view.html')
+        self.assertEqual(saved_cv, first_cv)
 
-    def test_displays_only_items_for_that_cv(self):
-        correct_cv = CV.objects.create()
-        Item.objects.create(text='itemey 1', cv=correct_cv)
-        Item.objects.create(text ='itemey 2', cv=correct_cv)
-        other_cv = CV.objects.create()
-        Item.objects.create(text='other cv item 1', cv=other_cv)
-        Item.objects.create(text='other cv item 2', cv=other_cv)
+        self.assertEqual(first_cv.title, 'The first cv title')
+        self.assertEqual(first_cv.name, 'Jane')
+        self.assertEqual(second_cv.title, 'The second cv title')
+        self.assertEqual(second_cv.name, 'John')
+   
         
-        response = self.client.get('/cvedit/{correct_cv.id}/')
+class CVFormTest(TestCase):
+    def test_form_renders_cv_text_input(self):
+        form = CVForm()
+        self.assertIn('placeholder="Enter your name"', form.as_p())
         
-        self.assertContains(response, 'itemey 1')
-        self.assertContains(response, 'itemey 2')
-        self.assertNotContains(response, 'other list item 1')
-        self.assertNotContains(response, 'other list item 2')
+    def test_form_validation_for_blank_items(self):
+        form = CVForm(data={'title': 'Test', 'name': ''})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors['name'],
+            [EMPTY_FIELD_ERROR]
+        )
         
 
-class NewCVTest(TestCase):
 
-    def test_can_save_a_POST_request(self):
-        self.client.post('/cvedit/new', data={'item_text': 'A new text item'})
-        
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new text item')
-    
-    def test_redirects_after_POST(self):
-        response = self.client.post('/cvedit/new', data={'item_text': 'A new text item'})
-        new_cv = CV.objects.first()
-        self.assertRedirects(response, '/cvedit/{new_cv.id}/')
     
