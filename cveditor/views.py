@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from cveditor.models import CV
 from .forms import CVForm
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 # Create your views here.
 def cv_edit(request, pk):
@@ -33,5 +35,11 @@ def new_cv(request):
     return render(request, 'cveditor/cv_edit.html', {'form': form})
     
 def cv_list(request):
-    cvs = CV.objects.all()
+    cvs = CV.objects.filter(created_date__lte=timezone.now()).order_by('-created_date')
     return render(request, 'cveditor/cv_list.html', {'cvs':cvs})
+    
+@login_required    
+def cv_remove (request, pk):
+    cv = get_object_or_404(CV, pk=pk)
+    cv.delete()
+    return redirect('cv_list')

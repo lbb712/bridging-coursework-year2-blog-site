@@ -2,15 +2,15 @@
 
 {% block content %}
 
-	<h1>Your CV's</h1>
+	<h1 class="center">Your CV's</h1>
 	{% for cv in cvs %}
-		<div>
+		<div class="post">
 			<h2><a href="{% url 'view_cv' pk=cv.pk %}">{{ cv.title }}</a></h2>
 			<div>
 				<p><small>Created: {{ cv.created_date }}</small></p>
 			</div>
 		</div>
 	{% endfor %}
-	<a href="{% url 'new_cv' %}">New CV<a>
+	<a href="{% url 'new_cv' %}" class="btn btn-default">New CV<a>
 	
 {% endblock %}
